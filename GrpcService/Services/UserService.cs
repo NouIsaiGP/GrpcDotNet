@@ -4,9 +4,12 @@ using GrpcService.Domain;
 using GrpcService.Protos;
 using Microsoft.EntityFrameworkCore;
 using User = GrpcService.Domain.User;
+using Isopoh.Cryptography.Argon2;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrpcService.Services;
 
+[Authorize]
 public class UserService : Protos.UserService.UserServiceBase
 {
     private readonly ApplicationDbContext _context;
@@ -18,11 +21,14 @@ public class UserService : Protos.UserService.UserServiceBase
 
     public override async Task<UserResponse> CreateUser(CreateUserRequest request, ServerCallContext context)
     {
+        
+        var hashedPassword = Argon2.Hash(request.Password);
+        
         var user = new User()
         {
             Name = request.Name,
             Email = request.Email,
-            Password = request.Password
+            Password = hashedPassword
         };
         
         _context.Users.Add(user);

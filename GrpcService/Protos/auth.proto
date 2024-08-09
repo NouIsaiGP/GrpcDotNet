@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcService.Protos";
+
+package auth;
+
+// Service definition for authentication
+service AuthService {
+  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc GenerateToken (GenerateTokenRequest) returns (GenerateTokenResponse);
+}
+
+// The request message containing the user credentials.
+message GenerateTokenRequest {
+  string username = 1;
+  string password = 2;
+}
+
+// The response message containing the JWT token.
+message GenerateTokenResponse {
+  string token = 1;
+}
+
+// The request message containing the user registration information.
+message RegisterRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+}
+
+// The response message containing the registration status and JWT token.
+message RegisterResponse {
+  bool success = 1;
+  string token = 2;
+}
